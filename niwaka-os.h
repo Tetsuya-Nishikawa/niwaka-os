@@ -70,14 +70,15 @@ void sti();
 void cli();
 void set_apictimer(unsigned int sec);
 
-extern int timer_flg;
+extern unsigned int timer_flg;
 
-//void init_pic();
+void init_pic();
 void init_kbc();
 int check_fifo();
 void console_init();
-void init_timer_manager();
+//void init_timer_manager();
 void add_timer_block(unsigned int now_count, unsigned int time, unsigned short selector);
+void set_apictimer(unsigned int sec);
 
 #define PIC0_ICW1		0x0020
 #define PIC0_OCW2		0x0020
@@ -138,3 +139,7 @@ typedef struct _TIMER_MANAGER{
     int block_max;//TIMER_BLOCK????
     TIMER_BLOCK timer_block_list[2];
 }TIMER_MANAGER;
+unsigned int measure_hz(unsigned short addr);
+
+void init_memory_table();
+unsigned int alloc_memory(int size);

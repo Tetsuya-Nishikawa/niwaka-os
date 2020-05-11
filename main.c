@@ -262,16 +262,16 @@ void efi_main(int ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
 	//niwakaos.binを読み込む
 	EFI_FILE_PROTOCOL *file;
 	char *osfile_buff;
-	int osfile_size=10000;
+	unsigned int osfile_size=100000;
 	root->OPEN(root, &file, L"niwaka-os.bin", EFI_FILE_MODE_READ, 0);
 	file->READ(file, &osfile_size, osfile_buff);
-	int entry_point;//エントリポインと
-	int data_linearaddr;//dataセグメントのトップリニアアドレス
-	int bss_linearaddr; //bssセグメントのトップリニアアドレス
-	int code_filesize;  //codeセグメントのファイル上のサイズ
-	int data_filesize;  //dataセグメントのファイル上のサイズ
-	int code_fileoffset;//コードセグメントのファイルの先頭からのオフセット
-	int data_fileoffset;//データセグメントのファイルの先頭からのオフセット
+	unsigned int entry_point;//エントリポインと
+	unsigned int data_linearaddr;//dataセグメントのトップリニアアドレス
+	unsigned int bss_linearaddr; //bssセグメントのトップリニアアドレス
+	unsigned int code_filesize;  //codeセグメントのファイル上のサイズ
+	unsigned int data_filesize;  //dataセグメントのファイル上のサイズ
+	unsigned int code_fileoffset;//コードセグメントのファイルの先頭からのオフセット
+	unsigned int data_fileoffset;//データセグメントのファイルの先頭からのオフセット
 
 	ELF_HEADER *elf_header=osfile_buff;
 	PH_HEADER  *ph_header=(osfile_buff+elf_header->e_phoff);
@@ -284,7 +284,9 @@ void efi_main(int ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
 	data_fileoffset = ((PH_HEADER*)((unsigned int)ph_header+32))->p_offset;
 
 	//まずは、コードセグメントの転送から
-	memory_transfer(osfile_buff,0x0c000000, code_filesize+code_fileoffset); 
+	//memory_transfer(osfile_buff,0x0c000000, code_filesize+code_fileoffset); 
+	memory_transfer(osfile_buff,0xa0000000, code_filesize+code_fileoffset); 
+
 	//dataセグメントの転送
 	memory_transfer(osfile_buff+data_fileoffset, data_linearaddr, data_filesize);
 
@@ -295,9 +297,9 @@ void efi_main(int ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
 	PIXEL *vram=EGOP->MODE->FrameBufferBase;
 	PIXEL *vram_now;
 	unsigned int *test10=0x1000;
-	unsigned int *test11=0x1004;
-	unsigned int *test12=0x1008;
-	unsigned int *test13=0x100c;
+	unsigned int *test11=0x1008;
+	unsigned int *test12=0x1010;
+	unsigned int *test13=0x1018;
 
 	*(test10)   = EGOP->MODE->Info->PixelsPerScanLine;
 	*(test11) = EGOP->MODE->Info->VerticalResolution;
@@ -345,8 +347,8 @@ void efi_main(int ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
 		}
 
 	}
-	int *memo1=0x2000;
-	int *memo2=0x2004;
+	unsigned int *memo1=0x2000;
+	unsigned int *memo2=0x2008;
 	*memo1 = pm_timer_block;
 	*memo2 = 3579545;
 
@@ -359,9 +361,10 @@ void efi_main(int ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
 
 //addr番地にジャンプする。
 //インラインアセンブラ
-void jmp(int addr){
+void jmp(unsigned int addr){
 	
-	unsigned int sp = 0x0c000000;
+	//unsigned int sp = 0x0c000000;
+	unsigned int sp=0xa0000000;
 	asm("movl %0, %%esp"
 		:
 		:"r"(sp)

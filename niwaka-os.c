@@ -16,14 +16,14 @@ void niwaka_main(){
 	int *a = 0x0;
 	*a = &lvt_timer;
 	
-    int *vram_x        = 0x1000;
-    int *vram_y        = 0x1004;
-    int *vram_baseaddr = 0x1008;
-	int *acpi_timer_addr = 0x2000;
-	int *hz            = 0x2004;
-    int max_row;
-    int max_col;
-    int base_addr;
+    unsigned int *vram_x        = 0x1000;
+    unsigned int *vram_y        = 0x1008;
+    unsigned int *vram_baseaddr = 0x1010;
+	unsigned int *acpi_timer_addr = 0x2000;
+	unsigned int *hz            = 0x2008;
+    unsigned int max_row;
+    unsigned int max_col;
+    unsigned int base_addr;
     max_row = *vram_y;
     max_col = *vram_x;
     base_addr = *vram_baseaddr;
@@ -46,14 +46,29 @@ void niwaka_main(){
 
 	TSS task_a, task_b;
 	//コンソール用のTSS
-	//TSS task_console;
-	/***
+	TSS task_console;
 	task_console.ldt = 0;
 	task_console.iomap = 0x40000000;
 	create_gdt(5, 103, (int)&task_console, AR_TSS);
+	task_console.eip   = console_init;
+	task_console.eflags = 0x00000202;
+	task_console.eax   = 0;
+	task_console.ecx   = 0;
+	task_console.edx   = 0;
+	task_console.ebx   = 0;
+	task_console.esp   = 0xa00000;
+	task_console.ebp   = 0;
+	task_console.esi   = 0;
+	task_console.edi   = 0;
+	task_console.es    = 8*1;
+	task_console.cs    = 8*2;
+	task_console.ss    = 8*1;
+	task_console.ds    = 8*1;
+	task_console.fs    = 8*1;
+	task_console.gs    = 8*1;
+	task_console.ldt   = 0;
+	task_console.iomap = 0x40000000;
 
-	***/
-	
 	task_a.ldt = 0;
 	task_a.iomap = 0x40000000;
 	
@@ -112,28 +127,21 @@ static void init(){
 	cli();
 	init_kbc();
 	font_init();
+
 	//0x21は、33
 	create_idt(0x21, (int)asm_inthandler21, 0x8e00, 2*8);
 	//create_idt(0x26, (int)asm_inthandler26, 0x8e00, 2*8);
 	//apicタイマー用のセグメント
-
-	//apicは、picから割り込みがこない
 	create_idt(48,   (int)asm_inthandler48, 0x8e00, 2*8);
 
 	//init_timer_manager();
 	init_pic();
 	out_8(PIC0_IMR, 0xfd);
 	sti();
-	console_init();
+	init_memory_table();
+	//console_init();
 }
 
-//1010a
-//1011b
-//1100c
-//1101d
-//1110e
-
-//3217416208+30*8
 void wait(int sec, unsigned short addr){
 	unsigned int start_time;
 	unsigned int end_time;
@@ -239,4 +247,55 @@ static void black(){
 		}
 	}
 	return;
+}
+int pow(int a, int b){
+    int i;
+    int temp = a;
+    if(b==0){
+        return 1;
+    }
+    for(i=0; i < b; i++){
+        a = a*temp;
+    }
+    return a;
+}
+void char_to_int(char s[5]){
+    int i;
+    int j;
+    int ans=0;
+    i = 0;
+    for(j=4; j > -1; j--){
+        if(s[j]=='0'){
+            ans = ans + 0*pow(10, i);
+        }
+        if(s[j]=='1'){
+            ans = ans + 1*pow(10, i);
+        }
+        if(s[j]=='2'){
+            ans = ans + 2*pow(10, i);
+        }
+        if(s[j]=='3'){
+            ans = ans + 3*pow(10, i);
+        }
+        if(s[j]=='4'){
+            ans = ans + 4*pow(10, i);
+        }
+        if(s[j]=='5'){
+            ans = ans + 5*pow(10, i);
+        }
+        if(s[j]=='6'){
+            ans = ans + 6*pow(10, i);
+        }
+        if(s[j]=='7'){
+            ans = ans + 7*pow(10, i);
+        }
+        if(s[j]=='8'){
+            ans = ans + 8*pow(10, i);
+        }
+        if(s[j]=='9'){
+            ans = ans + 9*pow(10, i);
+        }
+        i++;
+    }
+    return;
 }

@@ -9,18 +9,19 @@ static void consbuf_to_vram_set(char *font, int col, int row);
 char key_table[59]={0x00, 0x00, '1', '2', '3', '4', '5', '6', 0x37, 0x38, 0x39, 0x30,0x2d, 0x00, 0x00, 0x00, 0x51, 0x57, 0x45, 0x52, 0x54, 0x59, 0x55, 0x49,0x4f, 0x50, 0x40, 0x7b, 0x1c, 0x1d, 0x41, 0x53, 0x44, 0x46, 0x47, 0x48, 0x4a, 0x4b, 0x4c, 0x2b, 0x3a, 0x00, 0x2a, 0x7d, 0x5a, 0x58, 0x43, 0x56,0x42, 0x4e, 0x4d, 0x00, 0x2e, 0x00, 0x00,0x00, 0x00, 0x20};
 
 typedef struct _CONSOLE{
-    int x, y;               //今の座標
-    int now_col, now_row;   //今、何行何列にいるのか
-    int max_col, max_row;   //最大行と最大列
+    unsigned int x, y;               //今の座標
+    unsigned int now_col, now_row;   //今、何行何列にいるのか
+    unsigned int max_col, max_row;   //最大行と最大列
     PIXEL print_buf[800*600];         //コンソール画面の下書き
-    int vram_start;         //VRAMの番地を用意する。
-    int vram_end;           //実際は、vram_end-1が、最終番地
-    int vram_high;          //画面の高さ
-    int vram_side;          //画面の横
+    unsigned int vram_start;         //VRAMの番地を用意する。
+    unsigned int vram_end;           //実際は、vram_end-1が、最終番地
+    unsigned int vram_high;          //画面の高さ
+    unsigned int vram_side;          //画面の横
 }CONSOLE;
 
-CONSOLE *cons=0x00100000;
-
+//static CONSOLE *cons=0x00100000;
+//static CONSOLE *cons;
+static CONSOLE *cons;
 static char prompt[16] ={0x00,0x40,0x20,0x10,0x08,0x04,0x02,0x01,0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x00,};
 
 static void console_main(){
@@ -62,14 +63,18 @@ void delete(){
 
 //コンソール初期化を行う。
 void console_init(){
+    cons=(CONSOLE*)alloc_memory(1920040);
+    //cons = 0x00100000;
+    //番地がなかった。
     cons->x=0;
     cons->y=0;
     cons->now_col=0;
     cons->now_row=0;
     cons->max_col=100;
     cons->max_row=37;
-    cons->vram_start = *((int*)0x1008);
+    cons->vram_start = *((int*)0x1010);
     cons->vram_end   = (cons->vram_start+800*600*4);
+    //cons->vram_end = ;
     cons->vram_high  = 600;
     cons->vram_side  = 800;
     //cons->vram_high  = *((int*)0x1000);
@@ -81,7 +86,7 @@ void console_init(){
         cons->print_buf[i].blue  = 0x0;
         cons->print_buf[i].green = 0x0;
     }
-    
+
     console_print();
     console_main();
     return;
@@ -159,7 +164,6 @@ static void console_setbuf(char *font, int col, int row){
         }
     }
 }
-
 
 //コンソール画面を描画する。
 static void console_print(){
@@ -287,9 +291,7 @@ static void consbuf_to_vram(){
             vram_now = vram + i;
             vram_now->blue = cons->print_buf[i].blue;
             vram_now->red = cons->print_buf[i].red;
-            vram_now->green = cons->print_buf[i].green;
-
-        
+            vram_now->green = cons->print_buf[i].green;        
     }
     return;
 }
@@ -330,3 +332,17 @@ int strncmp(char *buff1, char *buff2, int size){
 //201351296
 //1056
 // 0c004158    16 OBJECT  GLOBAL DEFAULT    3 font_A
+//k2599317
+//niwka_dev Tetunosuke3822
+
+/***整数を文字列に治す方法に使えるかも?
+N,K = map(int, input().split())
+
+count = 0
+while N>0:
+    N = N//K
+    count = count + 1
+print(count)
+***/
+
+//口を閉じる

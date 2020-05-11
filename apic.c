@@ -1,6 +1,6 @@
 #include "niwaka-os.h"
 
-int timer_flg=0;
+unsigned int timer_flg=0;
 
 volatile static int *lvt_timer             = 0xfee00320;
 volatile static unsigned int *initial_count = 0xfee00380;
@@ -22,18 +22,18 @@ typedef struct _APIC_TIMER{
 
 void inthandler48(int *esp){
     *eoi = 1;//何かしら書き込む
-
+    int *test=0x100;
+    *test = 0xaaffaaff;
     //マルチタスク
-    /***
     if(timer_flg==1){
         timer_flg=0;
         task_switch(0, 3*8);
     }
     else{
+        *test = 0xaaaaaaaa;
         timer_flg=1;
         task_switch(0, 4*8);
     }
-    ***/
     return;
 }
 
