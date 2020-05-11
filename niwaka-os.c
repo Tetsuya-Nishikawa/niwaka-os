@@ -139,7 +139,7 @@ static void init(){
 	out_8(PIC0_IMR, 0xfd);
 	sti();
 	init_memory_table();
-	//console_init();
+	console_init();
 }
 
 void wait(int sec, unsigned short addr){
