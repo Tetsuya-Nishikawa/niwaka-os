@@ -7,8 +7,7 @@ typedef struct _MemoryManager{
     unsigned int memoryblock_size;
     unsigned int memoryblock_num;
 }MemoryManager;
-//a0006020
-//メモリーは、4294967296
+
 //4KBごとに管理行う
 static MemoryManager mem;
 

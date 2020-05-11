@@ -56,7 +56,8 @@ void niwaka_main(){
 	task_console.ecx   = 0;
 	task_console.edx   = 0;
 	task_console.ebx   = 0;
-	task_console.esp   = 0xa00000;
+	//task_console.esp   = 0xa00000;
+	task_console.esp   = alloc_memory(0x10000);
 	task_console.ebp   = 0;
 	task_console.esi   = 0;
 	task_console.edi   = 0;
@@ -83,7 +84,8 @@ void niwaka_main(){
 	task_b.ecx   = 0;
 	task_b.edx   = 0;
 	task_b.ebx   = 0;
-	task_b.esp   = 0x10000;
+	//task_b.esp   = 0x10000;
+	task_b.esp   = alloc_memory(0x1000);
 	task_b.ebp   = 0;
 	task_b.esi   = 0;
 	task_b.edi   = 0;
