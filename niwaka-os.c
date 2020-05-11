@@ -183,10 +183,10 @@ void init_mem_page(){
 static void blue(){
 	int temp=timer_flg;
     int *vram_x        = 0x1000;
-    int *vram_y        = 0x1004;
-    int *vram_baseaddr = 0x1008;
-	int *acpi_timer_addr = 0x2000;
-	int *hz            = 0x2004;
+    int *vram_y        = 0x1008;
+    int *vram_baseaddr = 0x1010;
+	unsigned int *acpi_timer_addr = 0x2000;
+	unsigned int *hz            = 0x2008;
     int max_row;
     int max_col;
     int base_addr;
@@ -216,15 +216,15 @@ static void blue(){
 
 //ブラックスクリーン
 static void black(){
-	int temp=timer_flg;
-    int *vram_x        = 0x1000;
-    int *vram_y        = 0x1004;
-    int *vram_baseaddr = 0x1008;
-	int *acpi_timer_addr = 0x2000;
-	int *hz            = 0x2004;
-    int max_row;
-    int max_col;
-    int base_addr;
+	unsigned int temp=timer_flg;
+	unsigned int *vram_x        = 0x1000;
+	unsigned int *vram_y        = 0x1008;
+	unsigned int *vram_baseaddr = 0x1010;
+	unsigned int *acpi_timer_addr = 0x2000;
+	unsigned int *hz            = 0x2008;
+	unsigned int max_row;
+	unsigned int max_col;
+	unsigned int base_addr;
     max_row = *vram_y;
     max_col = *vram_x;
     base_addr = *vram_baseaddr;
