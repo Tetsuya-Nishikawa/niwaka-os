@@ -151,3 +151,4 @@ void print_time();
 
 void init_proc_manager();
 void alloc_tss(unsigned int eip);
+void sched_proc();

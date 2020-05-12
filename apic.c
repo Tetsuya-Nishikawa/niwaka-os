@@ -23,6 +23,9 @@ typedef struct _APIC_TIMER{
 void inthandler48(int *esp){
     *eoi = 1;//何かしら書き込む
     timer_counter++;
+    //次のプロセス選択
+    sched_proc();
+    /***
     if(timer_flg==0){
         timer_flg = 1;
         task_switch(0, 4*8);
@@ -30,6 +33,7 @@ void inthandler48(int *esp){
         timer_flg = 0;
         task_switch(0, 5*8);
     }
+    ***/
     //sched_proc();スケジュール関数をここに追加する。
     return;
 }

@@ -49,7 +49,7 @@ void alloc_tss(unsigned int eip){
             proc_manager.ProcTable[i].proc_flg = 0;
             proc_manager.ProcTable[i].tss.eip = eip;
             proc_manager.ProcTable[i].tss.esp = alloc_memory(8*1024)+8*1024-8;
-    
+            proc_manager.proc_num++;
 	        create_gdt(START_SEL+i, 103, (int)&(proc_manager.ProcTable[i].tss), AR_TSS);
             return;
         }
@@ -70,6 +70,8 @@ void init_proc_manager(){
     }
     proc_manager.ProcTable[0].proc_flg = 0;
 	create_gdt(3, 103, (int)&(proc_manager.ProcTable[0].tss), AR_TSS);
+    proc_manager.proc_num++;
+    proc_manager.proc_now = 0;
     load_tr(3*8);
     return;
 }
@@ -77,5 +79,12 @@ void init_proc_manager(){
 //プロセスを変更する。hennkousuru.
 //プロセススケジューラ
 void sched_proc(){
-    //proc_save(proc_now, proc_next);//proc_nowは、今実行しているプロセス、proc_nextは次のプロセス
+    unsigned int i;
+    if((proc_manager.proc_now+1)==proc_manager.proc_num){
+        proc_manager.proc_now = 1;
+    }else{
+        proc_manager.proc_now += 1;
+    }
+    task_switch(0, (START_SEL+proc_manager.proc_now)*8);
+    return;
 }

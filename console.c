@@ -479,6 +479,10 @@ int strncmp(char *buff1, char *buff2, int size){
     return 1;
 }
 
+//プロセスID表示する。
+void print_proc_id(){
+
+}
 
 //0c006080  2048 OBJECT  GLOBAL DEFAULT    4 font_ASCII
 //201351296
