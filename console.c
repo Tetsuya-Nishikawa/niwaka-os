@@ -187,7 +187,7 @@ static void console_reset(){
     PIXEL *vram,*vram_now;
     vram = cons->vram_start;
 
-    for(int i=0; i < cons->vram_side*cons->vram_high; i++){
+    for(int i=800*16; i < cons->vram_side*cons->vram_high; i++){
 
             vram_now = vram + i;
             vram_now->blue = 0x0;
@@ -306,9 +306,7 @@ static void new_prompt(){
         console_reset(cons);
         return;
     }
-    //console_setbuf(font_ASCII['O'], cons->now_col, cons->now_row);
-    //console_setbuf(font_ASCII['S'], cons->now_col, cons->now_row);
-    //console_setbuf(prompt, cons->now_col, cons->now_row);   
+  
     consbuf_to_vram_set(font_ASCII['O'], cons->now_col, cons->now_row);
     consbuf_to_vram_set(font_ASCII['S'], cons->now_col, cons->now_row);
     consbuf_to_vram_set(prompt, cons->now_col, cons->now_row);
@@ -456,7 +454,13 @@ void print_time(){
         //先頭の1行を黒くする。
         flash_topline();
 
-        unsigned int col=0;
+        unsigned int col=7;
+        consbuf_to_vram_time(font_ASCII['T'], 0, 0);
+        consbuf_to_vram_time(font_ASCII['I'], 1, 0);
+        consbuf_to_vram_time(font_ASCII['M'], 2, 0);
+        consbuf_to_vram_time(font_ASCII['E'], 3, 0);
+        consbuf_to_vram_time(font_ASCII[':'], 4, 0);
+
         //文字列の先頭を探す
         for(i=0; s[i]!='e'; i++){
 
@@ -489,16 +493,3 @@ void print_proc_id(){
 //1056
 // 0c004158    16 OBJECT  GLOBAL DEFAULT    3 font_A
 //k2599317
-//niwka_dev Tetunosuke3822
-
-/***整数を文字列に治す方法に使えるかも?
-N,K = map(int, input().split())
-
-count = 0
-while N>0:
-    N = N//K
-    count = count + 1
-print(count)
-***/
-
-//口を閉じる

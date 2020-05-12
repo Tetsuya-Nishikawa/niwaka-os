@@ -37,10 +37,10 @@ static void init_tss(TSS *tss){
 	tss->gs    = 8*1;
 	tss->ldt   = 0;
 	tss->iomap = 0x40000000;
-
+    return;
 }
 
-//TSSを割り当てる
+//TSSを割り当てる  eipは登録する関数の番地
 void alloc_tss(unsigned int eip){
     unsigned int i;
 
@@ -87,4 +87,10 @@ void sched_proc(){
     }
     task_switch(0, (START_SEL+proc_manager.proc_now)*8);
     return;
+}
+
+//新しいPIDをゲットする。
+void new_pid(){
+
+    return proc_manager.proc_now+1;
 }
