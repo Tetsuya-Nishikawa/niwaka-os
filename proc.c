@@ -15,6 +15,9 @@ typedef struct _PROC{
 
 typedef struct _PROC_MANAGER{
     //プロセス構造体の配列
+    PROC ProcTable[100];
+    unsigned proc_num;
+    unsigned proc_max_num;
 }PROC_MANAGER;
 
 //プロセスを変更する。hennkousuru.

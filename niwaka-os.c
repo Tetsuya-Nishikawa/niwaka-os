@@ -29,9 +29,6 @@ void niwaka_main(){
     base_addr = *vram_baseaddr;
     PIXEL *vram=base_addr;
     PIXEL *vram_now;
-	//graphic_manager->vram_baseaddr=*vram_baseaddr;
-	//graphic_manager->max_col = *vram_x;
-	//graphic_manager->max_row = *vram_y;
 
 	//周波数を測る
 	int apic_hz;//apic_timerの周波数
@@ -45,47 +42,23 @@ void niwaka_main(){
 	int data;
 
 	TSS task_a, task_b;
-	//コンソール用のTSS
-	TSS task_console;
-	task_console.ldt = 0;
-	task_console.iomap = 0x40000000;
-	create_gdt(5, 103, (int)&task_console, AR_TSS);
-	task_console.eip   = console_init;
-	task_console.eflags = 0x00000202;
-	task_console.eax   = 0;
-	task_console.ecx   = 0;
-	task_console.edx   = 0;
-	task_console.ebx   = 0;
-	//task_console.esp   = 0xa00000;
-	task_console.esp   = alloc_memory(0x10000);
-	task_console.ebp   = 0;
-	task_console.esi   = 0;
-	task_console.edi   = 0;
-	task_console.es    = 8*1;
-	task_console.cs    = 8*2;
-	task_console.ss    = 8*1;
-	task_console.ds    = 8*1;
-	task_console.fs    = 8*1;
-	task_console.gs    = 8*1;
-	task_console.ldt   = 0;
-	task_console.iomap = 0x40000000;
 
 	task_a.ldt = 0;
 	task_a.iomap = 0x40000000;
-	
+
 	create_gdt(3, 103, (int)&task_a, AR_TSS);
 	create_gdt(4, 103, (int)&task_b, AR_TSS);
-
+	//create_gdt(4, 103, (int)&task_console, AR_TSS);
 	load_tr(3*8);
 
-	task_b.eip   = black;
+	//task_b.eip   = black;
+	task_b.eip = console_init;
 	task_b.eflags = 0x00000202;
 	task_b.eax   = 0;
 	task_b.ecx   = 0;
 	task_b.edx   = 0;
 	task_b.ebx   = 0;
-	//task_b.esp   = 0x10000;
-	task_b.esp   = alloc_memory(0x1000);
+	task_b.esp   = alloc_memory(8*1024)+8*1024-8;
 	task_b.ebp   = 0;
 	task_b.esi   = 0;
 	task_b.edi   = 0;
@@ -98,9 +71,8 @@ void niwaka_main(){
 	task_b.ldt   = 0;
 	task_b.iomap = 0x40000000;
 
-	//(int vector_number, int limit, int addr, int attr)
+	//init();
 	set_apictimer(4);
-
 	for(;;){
 	
 		for(i=0; i < max_col; i++){
@@ -112,14 +84,7 @@ void niwaka_main(){
 			}
 		}
 	}
-	for(i=0; i < max_col; i++){
-		for(j=0; j < max_row; j++){
-			vram_now = vram+(max_col*j)+i;
-			vram_now->blue=0x0;
-			vram_now->red=0x0;
-			vram_now->green=0x0;
-		}
-	}
+
     for(;;){
         hlt();
     }
@@ -141,7 +106,8 @@ static void init(){
 	out_8(PIC0_IMR, 0xfd);
 	sti();
 	init_memory_table();
-	console_init();
+	//console_init();
+
 }
 
 void wait(int sec, unsigned short addr){

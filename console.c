@@ -24,7 +24,7 @@ typedef struct _CONSOLE{
 static CONSOLE *cons;
 static char prompt[16] ={0x00,0x40,0x20,0x10,0x08,0x04,0x02,0x01,0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x00,};
 
-static void console_main(){
+void console_main(){
 	char data;
     char ascii_code;
 
@@ -69,12 +69,11 @@ void console_init(){
     cons->x=0;
     cons->y=0;
     cons->now_col=0;
-    cons->now_row=0;
+    cons->now_row=1;
     cons->max_col=100;
     cons->max_row=37;
     cons->vram_start = *((int*)0x1010);
     cons->vram_end   = (cons->vram_start+800*600*4);
-    //cons->vram_end = ;
     cons->vram_high  = 600;
     cons->vram_side  = 800;
     //cons->vram_high  = *((int*)0x1000);
@@ -159,7 +158,7 @@ static void console_setbuf(char *font, int col, int row){
         cons->now_col = 0;
         cons->now_row++;        
         if(cons->now_row >= cons->max_row){ //最後の行まできたs
-            cons->now_row = 0;
+            cons->now_row = 1;
             console_reset();
         }
     }
@@ -182,7 +181,7 @@ static void console_reset(){
     int y;
 
     cons->now_col = 0;
-    cons->now_row = 0;
+    cons->now_row = 1;
     PIXEL *vram,*vram_now;
     vram = cons->vram_start;
 
@@ -272,7 +271,7 @@ static void consbuf_to_vram_set(char *font, int col, int row){
         cons->now_col = 0;
         cons->now_row++;        
         if(cons->now_row >= cons->max_row){ //最後の行まできたs
-            cons->now_row = 0;
+            cons->now_row = 1;
             console_reset();
         }
     }

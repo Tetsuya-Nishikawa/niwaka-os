@@ -142,4 +142,6 @@ typedef struct _TIMER_MANAGER{
 unsigned int measure_hz(unsigned short addr);
 
 void init_memory_table();
-unsigned int alloc_memory(int size);
+unsigned int alloc_memory(unsigned int size);
+
+void console_main();
