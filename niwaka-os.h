@@ -147,3 +147,7 @@ unsigned int alloc_memory(unsigned int size);
 void console_main();
 
 extern unsigned int timer_counter;
+void print_time();
+
+void init_proc_manager();
+void alloc_tss(unsigned int eip);

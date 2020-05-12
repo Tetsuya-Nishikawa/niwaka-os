@@ -11,8 +11,9 @@ run:console.c pic.c keyboard.c font.c niwaka-os.c memory.c apic.c gdt-idt.c asml
 	/usr/local/bin/i386-elf-gcc -c -O0  -fno-pic -o apic.o apic.c -Wall
 	/usr/local/bin/i386-elf-gcc -c -O0  -fno-pic -o gdt-idt.o gdt-idt.c -Wall
 	/usr/local/bin/i386-elf-gcc -c -O0  -fno-pic -o memory.o memory.c -Wall
+	/usr/local/bin/i386-elf-gcc -c -O0  -fno-pic -o proc.o proc.c -Wall
 	/usr/local/bin/nasm -f elf32 -o asmlib.o asmlib.asm
-	/usr/local/bin/i386-elf-ld -O0 -nostdlib -nostartfiles -T niwaka-os.ls -o niwaka-os.bin niwaka-os.o memory.o asmlib.o font.o apic.o gdt-idt.o console.o pic.o keyboard.o 
+	/usr/local/bin/i386-elf-ld -O0 -nostdlib -nostartfiles -T niwaka-os.ls -o niwaka-os.bin niwaka-os.o proc.o memory.o asmlib.o font.o apic.o gdt-idt.o console.o pic.o keyboard.o 
 	mkdir -p fs/EFI/BOOT
 	i686-w64-mingw32-gcc -O0 -m32 -Wall -Wextra -nostdinc -nostdlib -fno-builtin -Wl,--subsystem,10 -o main.efi main.c -shared
 

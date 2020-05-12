@@ -5,7 +5,7 @@ static void console_reset();
 static void console_print();
 static void console_setbuf(char *font, int col, int row);
 static void new_prompt();
-static void print_time();
+void print_time();
 static void consbuf_to_vram_set(char *font, int col, int row);
 char* str_to_int(unsigned int num);
 char key_table[59]={0x00, 0x00, '1', '2', '3', '4', '5', '6', 0x37, 0x38, 0x39, 0x30,0x2d, 0x00, 0x00, 0x00, 0x51, 0x57, 0x45, 0x52, 0x54, 0x59, 0x55, 0x49,0x4f, 0x50, 0x40, 0x7b, 0x1c, 0x1d, 0x41, 0x53, 0x44, 0x46, 0x47, 0x48, 0x4a, 0x4b, 0x4c, 0x2b, 0x3a, 0x00, 0x2a, 0x7d, 0x5a, 0x58, 0x43, 0x56,0x42, 0x4e, 0x4d, 0x00, 0x2e, 0x00, 0x00,0x00, 0x00, 0x20};
@@ -30,7 +30,6 @@ unsigned int timer_counter=0;
 void console_main(){
 	char data;
     char ascii_code;
-    print_time();
 	for(;;){
 
 		data = check_fifo();
@@ -440,7 +439,7 @@ void flash_topline(){
 }
 
 //タイマー表示
-static void print_time(){
+void print_time(){
     //consbuf_to_vram_set(font_ASCII['O'], cons->now_col, cons->now_row);
     int i;
     unsigned int index=0;
@@ -450,7 +449,7 @@ static void print_time(){
     while(1){
         time_now = timer_counter;
         while(time_now==timer_counter){
-            
+
         }
         s = str_to_int(timer_counter);
         

@@ -26,18 +26,11 @@ void inthandler48(int *esp){
     if(timer_flg==0){
         timer_flg = 1;
         task_switch(0, 4*8);
+    }else{
+        timer_flg = 0;
+        task_switch(0, 5*8);
     }
-    //マルチタスク
-    /***
-    if(timer_flg==1){
-        timer_flg=0;
-        task_switch(0, 3*8);
-    }
-    else{
-        timer_flg=1;
-        task_switch(0, 4*8);
-    }
-    ***/
+    //sched_proc();スケジュール関数をここに追加する。
     return;
 }
 
