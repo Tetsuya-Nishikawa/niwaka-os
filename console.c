@@ -5,7 +5,9 @@ static void console_reset();
 static void console_print();
 static void console_setbuf(char *font, int col, int row);
 static void new_prompt();
+static void print_time();
 static void consbuf_to_vram_set(char *font, int col, int row);
+char* str_to_int(unsigned int num);
 char key_table[59]={0x00, 0x00, '1', '2', '3', '4', '5', '6', 0x37, 0x38, 0x39, 0x30,0x2d, 0x00, 0x00, 0x00, 0x51, 0x57, 0x45, 0x52, 0x54, 0x59, 0x55, 0x49,0x4f, 0x50, 0x40, 0x7b, 0x1c, 0x1d, 0x41, 0x53, 0x44, 0x46, 0x47, 0x48, 0x4a, 0x4b, 0x4c, 0x2b, 0x3a, 0x00, 0x2a, 0x7d, 0x5a, 0x58, 0x43, 0x56,0x42, 0x4e, 0x4d, 0x00, 0x2e, 0x00, 0x00,0x00, 0x00, 0x20};
 
 typedef struct _CONSOLE{
@@ -23,13 +25,14 @@ typedef struct _CONSOLE{
 //static CONSOLE *cons;
 static CONSOLE *cons;
 static char prompt[16] ={0x00,0x40,0x20,0x10,0x08,0x04,0x02,0x01,0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x00,};
+unsigned int timer_counter=0;
 
 void console_main(){
 	char data;
     char ascii_code;
-
+    print_time();
 	for(;;){
-	
+
 		data = check_fifo();
 		if(data == -1){
             hlt();
@@ -315,6 +318,157 @@ static void new_prompt(){
     return;
 }
 
+//整数から文字列へ
+char* str_to_int(unsigned int num){
+    int i;
+    int j;
+	int temp;
+	char *s=0x100;
+	int index = 0;
+
+    for(index=0; num!=0; index++){
+        temp = num%10;
+        num  = num /10 ;
+		if(temp==0){
+			s[index]='0';
+		}else if(temp==1){
+			s[index]='1';
+		}else if(temp==2){
+			s[index]='2';
+		}else if(temp==3){
+			s[index]='3';
+		}else if(temp==4){
+			s[index]='4';
+		}else if(temp==5){
+			s[index]='5';
+		}else if(temp==6){
+			s[index]='6';
+		}else if(temp==7){
+			s[index]='7';
+		}else if(temp==8){
+			s[index]='8';
+		}else if(temp==9){
+			s[index]='9';
+		}
+    }
+
+	s[index]='e';//eが終端
+    return s;
+}
+
+//指定した部分だけ描画する。
+void consbuf_to_vram_time(char *font, int col, int row){
+	char data;
+    int i,j;
+    int x, y;
+    
+    x = 8*col;
+    y = 16*row;
+    PIXEL *vram=cons->vram_start;
+    PIXEL *vram_now;
+
+    for(i=0; i < 16; i++){
+		data = font[i];
+
+		if((data & 0x80) != 0){
+                vram_now = vram + x + cons->vram_side * (i+y);
+                vram_now->blue = 0xff;
+                vram_now->red = 0xff;
+                vram_now->green = 0xff;           
+		}
+		if((data & 0x40) != 0){
+                vram_now = vram + x + 1 +  cons->vram_side * (i+y);
+                vram_now->blue = 0xff;
+                vram_now->red = 0xff;
+                vram_now->green = 0xff;    
+		}
+		if((data & 0x20) != 0){
+                vram_now = vram + x + 2 +  cons->vram_side * (i+y);
+                vram_now->blue = 0xff;
+                vram_now->red = 0xff;
+                vram_now->green = 0xff;    
+		}
+		if((data & 0x10)  != 0){
+                vram_now = vram + x + 3 +  cons->vram_side * (i+y);
+                vram_now->blue = 0xff;
+                vram_now->red = 0xff;
+                vram_now->green = 0xff;    
+		}
+		if((data & 0x08) != 0){
+                vram_now = vram + x + 4 +  cons->vram_side * (i+y);
+                vram_now->blue = 0xff;
+                vram_now->red = 0xff;
+                vram_now->green = 0xff;    
+		}
+		if((data & 0x04) != 0){
+                vram_now = vram + x + 5 +  cons->vram_side * (i+y);
+                vram_now->blue = 0xff;
+                vram_now->red = 0xff;
+                vram_now->green = 0xff;    
+		}
+		if((data & 0x02) != 0){
+                vram_now = vram + x + 6 +  cons->vram_side * (i+y);
+                vram_now->blue = 0xff;
+                vram_now->red = 0xff;
+                vram_now->green = 0xff;    
+		}
+		if((data & 0x01) != 0){
+                vram_now = vram + x + 7 +  cons->vram_side * (i+y);
+                vram_now->blue = 0xff;
+                vram_now->red = 0xff;
+                vram_now->green = 0xff;    
+		}
+	}
+    
+    return;
+}
+
+void flash_topline(){
+    unsigned int i;
+    unsigned int j;
+    PIXEL *vram_start = cons->vram_start;
+    PIXEL *vram_now;
+    for(i=0; i < 800;i++){
+        for(j=0; j < 16; j++){
+            vram_now = vram_start + i + cons->vram_side * (j);
+            vram_now->red = 0x0;
+            vram_now->green = 0x0;
+            vram_now->blue  = 0x0;
+        }
+    }
+    return;
+}
+
+//タイマー表示
+static void print_time(){
+    //consbuf_to_vram_set(font_ASCII['O'], cons->now_col, cons->now_row);
+    int i;
+    unsigned int index=0;
+    unsigned int top;
+    char *s=alloc_memory(100);
+    unsigned int time_now;
+    while(1){
+        time_now = timer_counter;
+        while(time_now==timer_counter){
+            
+        }
+        s = str_to_int(timer_counter);
+        
+        //先頭の1行を黒くする。
+        flash_topline();
+
+        unsigned int col=0;
+        //文字列の先頭を探す
+        for(i=0; s[i]!='e'; i++){
+
+        }
+        top = i-1;
+        for(i=top; i>=0; i--){
+            consbuf_to_vram_time(font_ASCII[s[i]], col++, 0);
+        }
+    }
+
+}
 int strncmp(char *buff1, char *buff2, int size){
 
     for(int i=0; i < size; i++){

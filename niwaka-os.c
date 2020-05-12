@@ -51,7 +51,6 @@ void niwaka_main(){
 	//create_gdt(4, 103, (int)&task_console, AR_TSS);
 	load_tr(3*8);
 
-	//task_b.eip   = black;
 	task_b.eip = console_init;
 	task_b.eflags = 0x00000202;
 	task_b.eax   = 0;
@@ -72,7 +71,7 @@ void niwaka_main(){
 	task_b.iomap = 0x40000000;
 
 	//init();
-	set_apictimer(4);
+	set_apictimer(1);
 	for(;;){
 	
 		for(i=0; i < max_col; i++){
@@ -227,43 +226,4 @@ int pow(int a, int b){
     }
     return a;
 }
-void char_to_int(char s[5]){
-    int i;
-    int j;
-    int ans=0;
-    i = 0;
-    for(j=4; j > -1; j--){
-        if(s[j]=='0'){
-            ans = ans + 0*pow(10, i);
-        }
-        if(s[j]=='1'){
-            ans = ans + 1*pow(10, i);
-        }
-        if(s[j]=='2'){
-            ans = ans + 2*pow(10, i);
-        }
-        if(s[j]=='3'){
-            ans = ans + 3*pow(10, i);
-        }
-        if(s[j]=='4'){
-            ans = ans + 4*pow(10, i);
-        }
-        if(s[j]=='5'){
-            ans = ans + 5*pow(10, i);
-        }
-        if(s[j]=='6'){
-            ans = ans + 6*pow(10, i);
-        }
-        if(s[j]=='7'){
-            ans = ans + 7*pow(10, i);
-        }
-        if(s[j]=='8'){
-            ans = ans + 8*pow(10, i);
-        }
-        if(s[j]=='9'){
-            ans = ans + 9*pow(10, i);
-        }
-        i++;
-    }
-    return;
-}
+

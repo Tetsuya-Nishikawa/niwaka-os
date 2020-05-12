@@ -145,3 +145,5 @@ void init_memory_table();
 unsigned int alloc_memory(unsigned int size);
 
 void console_main();
+
+extern unsigned int timer_counter;

@@ -22,7 +22,7 @@ typedef struct _APIC_TIMER{
 
 void inthandler48(int *esp){
     *eoi = 1;//何かしら書き込む
-
+    timer_counter++;
     if(timer_flg==0){
         timer_flg = 1;
         task_switch(0, 4*8);
