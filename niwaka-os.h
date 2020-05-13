@@ -58,19 +58,16 @@ void create_gdt(unsigned int vector_number,unsigned int limit,unsigned int addr,
 void create_idt(char vector_number, int offset, short attr, short selector);
 //create_idt(0x21, (int)asm_inthandler21, 0x8e00, 2*8);
 void asm_inthandler21();
-//void asm_inthandler26();
+void asm_inthandler26();
 void asm_inthandler48();
 
 void inthandler21(int *esp);
-//void inthandler26(int *esp);
+void inthandler26(int *esp);
 void inthandler48(int *esp);
 void cpuid();
 void rdmsr();
 void sti();
 void cli();
-void set_apictimer(unsigned int sec);
-
-extern unsigned int timer_flg;
 
 void init_pic();
 void init_kbc();
@@ -78,7 +75,7 @@ int check_fifo();
 void console_init();
 //void init_timer_manager();
 void add_timer_block(unsigned int now_count, unsigned int time, unsigned short selector);
-void set_apictimer(unsigned int sec);
+void set_apictimer(double sec);
 
 #define PIC0_ICW1		0x0020
 #define PIC0_OCW2		0x0020

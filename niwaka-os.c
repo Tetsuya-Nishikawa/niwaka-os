@@ -37,15 +37,16 @@ void niwaka_main(){
 
 	//初期化を行う。
 	init();
-
+	//read_lba(10);
 	//drow_rect(640, 0, 800, 20);
 	int data;
 
 	TSS task_a, task_b, task_c;
 
+	//プロセス生成
 	alloc_tss(console_init);
 	alloc_tss(print_time);
-	set_apictimer(1);
+	set_apictimer(0.1);
 	for(;;){
 	
 		for(i=0; i < max_col; i++){
@@ -67,7 +68,7 @@ static void init(){
 	cli();
 	init_kbc();
 	font_init();
-
+	//issue_command_read(1,1,1);
 	//0x21は、33
 	create_idt(0x21, (int)asm_inthandler21, 0x8e00, 2*8);
 	//create_idt(0x26, (int)asm_inthandler26, 0x8e00, 2*8);
@@ -108,76 +109,6 @@ void init_mem_page(){
 	for(;;){
 
 	}
-}
-
-//ブルースクリーン
-static void blue(){
-	int temp=timer_flg;
-    int *vram_x        = 0x1000;
-    int *vram_y        = 0x1008;
-    int *vram_baseaddr = 0x1010;
-	unsigned int *acpi_timer_addr = 0x2000;
-	unsigned int *hz            = 0x2008;
-    int max_row;
-    int max_col;
-    int base_addr;
-    max_row = *vram_y;
-    max_col = *vram_x;
-    base_addr = *vram_baseaddr;
-    PIXEL *vram=base_addr;
-    PIXEL *vram_now;
-	//graphic_manager->vram_baseaddr=*vram_baseaddr;
-	//graphic_manager->max_col = *vram_x;
-	//graphic_manager->max_row = *vram_y;
-	int i, j;
-
-	while(1){
-		for(i=0; i < max_col; i++){
-			for(j=0; j < max_row; j++){
-				vram_now = vram+(max_col*j)+i;
-				vram_now->blue=0x0;
-				vram_now->red=0x0;
-				vram_now->green=0x0;
-			}
-		}
-
-	}
-	return;
-}
-
-//ブラックスクリーン
-static void black(){
-	unsigned int temp=timer_flg;
-	unsigned int *vram_x        = 0x1000;
-	unsigned int *vram_y        = 0x1008;
-	unsigned int *vram_baseaddr = 0x1010;
-	unsigned int *acpi_timer_addr = 0x2000;
-	unsigned int *hz            = 0x2008;
-	unsigned int max_row;
-	unsigned int max_col;
-	unsigned int base_addr;
-    max_row = *vram_y;
-    max_col = *vram_x;
-    base_addr = *vram_baseaddr;
-    PIXEL *vram=base_addr;
-    PIXEL *vram_now;
-	//graphic_manager->vram_baseaddr=*vram_baseaddr;
-	//graphic_manager->max_col = *vram_x;
-	//graphic_manager->max_row = *vram_y;
-	int i,j;
-
-	while(1){
-
-		for(i=0; i < max_col; i++){
-			for(j=0; j < max_row; j++){
-				vram_now = vram+(max_col*j)+i;
-				vram_now->blue=0xff;
-				vram_now->red=0x0;
-				vram_now->green=0x0;
-			}
-		}
-	}
-	return;
 }
 int pow(int a, int b){
     int i;

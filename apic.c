@@ -1,7 +1,5 @@
 #include "niwaka-os.h"
 
-unsigned int timer_flg=0;
-
 volatile static int *lvt_timer             = 0xfee00320;
 volatile static unsigned int *initial_count = 0xfee00380;
 volatile static unsigned int *current_count = 0xfee00390;
@@ -30,19 +28,6 @@ void inthandler48(int *esp){
     return;
 }
 
-/***
-void inthandler48(int *esp){
-    *eoi = 1;//何かしら書き込む
-    int i;
-
-    for(i=0;i < timer_manager.block_num; i++){
-        timer_manager.timer_block_list[i].now_count--;
-    }
-
-    return;
-}
-***/
-
 //周波数の測定を行う。
 unsigned int measure_hz(unsigned short addr){
     unsigned int end_count;
@@ -56,7 +41,7 @@ unsigned int measure_hz(unsigned short addr){
 }
 
 //apicタイマーの割り込み設定をする。
-void set_apictimer(unsigned int sec){
+void set_apictimer(double sec){
     timer_manager.block_num = 0;
     timer_manager.block_max = 2;
     *lvt_timer = 0x2 << 16 | 48;

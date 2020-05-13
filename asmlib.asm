@@ -5,7 +5,7 @@ global out_8
 global in_32
 global out_32
 global asm_inthandler21
-;global asm_inthandler26
+global asm_inthandler26
 global asm_inthandler48
 global sidt
 global cpuid
@@ -16,7 +16,7 @@ global task_switch
 global load_tr
 
 extern inthandler21
-;extern inthandler26
+extern inthandler26
 extern inthandler48
 
 section .text
@@ -69,6 +69,22 @@ asm_inthandler21:
 	MOV		DS,AX
 	MOV		ES,AX
 	CALL	inthandler21
+	POP		EAX
+	POPAD
+	POP		DS
+	POP		ES
+	IRETD
+
+asm_inthandler26:
+	PUSH	ES
+	PUSH	DS
+	PUSHAD
+	MOV		EAX,ESP
+	PUSH	EAX
+	MOV		AX,SS
+	MOV		DS,AX
+	MOV		ES,AX
+	CALL	inthandler26
 	POP		EAX
 	POPAD
 	POP		DS
