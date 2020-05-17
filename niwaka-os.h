@@ -165,6 +165,4 @@ void sched_proc();
 #define DEVICE_READY 0x88
 #define ERROR 0x01
 #define EXECUTE_DEVICE_DIAGNOSTIC 0x90
-void device_selection(unsigned char selector_number);
-void reset_hdd();
-unsigned char issue_command(unsigned char features, unsigned char sector_count, unsigned char sector_number, unsigned char cylinder_low, unsigned char cylinder_high, unsigned char drive_head, unsigned char command);
+void init_hdd();
