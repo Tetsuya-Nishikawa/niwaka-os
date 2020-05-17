@@ -14,16 +14,18 @@ run:console.c pic.c keyboard.c font.c niwaka-os.c memory.c apic.c gdt-idt.c asml
 	/usr/local/bin/i386-elf-gcc -c -O0  -fno-pic -o proc.o proc.c -Wall
 	/usr/local/bin/i386-elf-gcc -c -O0  -fno-pic -o floppy.o floppy.c -Wall
 	/usr/local/bin/i386-elf-gcc -c -O0  -fno-pic -o dma.o dma.c -Wall
+	/usr/local/bin/i386-elf-gcc -c -O0  -fno-pic -o hdd.o hdd.c -Wall
 
 	/usr/local/bin/nasm -f elf32 -o asmlib.o asmlib.asm
-	/usr/local/bin/i386-elf-ld -O0 -nostdlib -nostartfiles -T niwaka-os.ls -o niwaka-os.bin dma.o floppy.o niwaka-os.o proc.o memory.o asmlib.o font.o apic.o gdt-idt.o console.o pic.o keyboard.o 
+	/usr/local/bin/i386-elf-ld -O0 -nostdlib -nostartfiles -T niwaka-os.ls -o niwaka-os.bin hdd.o dma.o floppy.o niwaka-os.o proc.o memory.o asmlib.o font.o apic.o gdt-idt.o console.o pic.o keyboard.o 
 	mkdir -p fs/EFI/BOOT
 	i686-w64-mingw32-gcc -O0 -m32 -Wall -Wextra -nostdinc -nostdlib -fno-builtin -Wl,--subsystem,10 -o main.efi main.c -shared
 
 	cp main.efi ./fs/EFI/BOOT/BOOTIA32.EFI
 	rm ./fs/niwaka-os.bin
 	cp niwaka-os.bin ./fs/niwaka-os.bin
-	qemu-system-i386 -m 4G -bios OVMF.fd -hda fat:rw:fs -fda fat:rw:fs
+	qemu-system-i386 -m 4G -bios OVMF.fd -hda fat:rw:fs 
+
 clean:
 	rm *.o
 	rm *.bin 

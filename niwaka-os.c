@@ -82,6 +82,8 @@ static void init(){
 	init_memory_table();
 	init_proc_manager();
 	//console_init();
+	reset_hdd();
+	//device_selection(0);
 
 }
 

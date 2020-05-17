@@ -149,3 +149,22 @@ void print_time();
 void init_proc_manager();
 void alloc_tss(unsigned int eip);
 void sched_proc();
+
+#define DATA_REGISTER 0x1F0
+#define ERROR_FEATURES_REGISTER 0x1F1
+#define SECTOR_COUNT_REGISTER 0x1F2
+#define SECTOR_NUMBER_REGISTER 0x1F3
+#define CYLINDER_LOW_REGISTER 0x1F4
+#define CYLINDER_HIGH_REGISTER 0x1F5
+#define DRIVE_HEAD_REGISTER 0x1F6
+#define STATUS_COMMAND_REGISTER 0x1F7
+
+#define ALTERNATE_STATUS_DEVICE_CONTROL_REGISTER 0x3F6
+#define DRIVE_ADDRESS_REGISTER 0x3F7
+
+#define DEVICE_READY 0x88
+#define ERROR 0x01
+#define EXECUTE_DEVICE_DIAGNOSTIC 0x90
+void device_selection(unsigned char selector_number);
+void reset_hdd();
+unsigned char issue_command(unsigned char features, unsigned char sector_count, unsigned char sector_number, unsigned char cylinder_low, unsigned char cylinder_high, unsigned char drive_head, unsigned char command);
