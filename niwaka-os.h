@@ -48,6 +48,8 @@ extern unsigned char font_ASCII[128][16];
 void sidt(unsigned int addr);
 char in_8(int port);
 void out_8(int port, char value);
+short in_16(int port);
+void out_16(int port, short value);
 int in_32(int port);
 void out_32(int port, int value);
 void task_switch(int eip, int cs);
@@ -164,5 +166,9 @@ void sched_proc();
 
 #define DEVICE_READY 0x88
 #define ERROR 0x01
+#define READ_SECTORS 0x20
+#define WRITE_SECTORS 0x30
 #define EXECUTE_DEVICE_DIAGNOSTIC 0x90
 void init_hdd();
+void read_sectors(unsigned char sectors, unsigned char sector_number, unsigned char cylinder_low, unsigned char cylinder_high, unsigned char device_head, short *buff);
+void write_sectors(unsigned char sectors, unsigned char sector_number, unsigned char cylinder_low, unsigned char cylinder_high, unsigned char device_head, short *buff);

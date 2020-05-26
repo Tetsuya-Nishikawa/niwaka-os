@@ -82,7 +82,7 @@ static void init(){
 	init_memory_table();
 	init_proc_manager();
 	init_hdd();
-
+	return;
 }
 
 void wait(int sec, unsigned short addr){

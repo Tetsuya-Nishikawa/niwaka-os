@@ -2,6 +2,8 @@ bits 32
 global hlt
 global in_8
 global out_8
+global in_16
+global out_16
 global in_32
 global out_32
 global asm_inthandler21
@@ -42,6 +44,17 @@ out_8:		;void out_8(int port, char value);
 	MOV DX, [ESP+4]
 	OUT	DX, AL
 	RET 
+
+in_16:
+	MOV DX, [ESP+4]
+	IN  AX, DX
+	RET
+
+out_16: ;(int port, short value)
+	MOV AX, [ESP+8]
+	MOV DX, [ESP+4]
+	OUT DX, AX
+	RET
 
 in_32:		;void in_32(int port);
 	MOV DX, [ESP+4]
